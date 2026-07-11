@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Mohamed's Plan</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="My Plan" />
+<meta name="theme-color" content="#0F1117" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F1117'/%3E%3Ctext x='50' y='66' font-size='54' text-anchor='middle' fill='%23818CF8' font-family='Arial'%3E%E2%9C%B3%3C/text%3E%3C/svg%3E" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #0F1117; color: #F5F6FA; }
+  body { padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 30px); padding-top: max(20px, env(safe-area-inset-top)); }
+  ::-webkit-scrollbar { height: 6px; width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #2A2E3E; border-radius: 3px; }
+  input, select, button { font-family: 'Inter', sans-serif; }
+  input:focus, select:focus { outline: 2px solid #818CF8; outline-offset: 1px; }
+  button { cursor: pointer; }
+  .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .eyebrow { font-size:10.5px; letter-spacing:0.12em; color:#6B7280; font-weight:700; }
+  .h1 { font-size:21px; font-weight:800; margin-top:2px; }
+  .h2 { font-size:15px; font-weight:700; }
+  .locBanner { display:flex; align-items:center; gap:6px; font-size:11px; color:#8B90A0; background:#171A23; border:1px solid #232636; border-radius:8px; padding:7px 10px; margin-bottom:16px; }
+  .tabs { display:flex; gap:16px; border-bottom:1px solid #1E2130; margin-bottom:16px; overflow-x:auto; }
+  .tab-btn { background:transparent; border:none; display:flex; align-items:center; gap:6px; padding:0 0 10px; font-size:13px; font-weight:600; color:#6B7280; white-space:nowrap; border-bottom:2px solid transparent; }
+  .tab-btn.active { color:#F5F6FA; border-bottom:2px solid #818CF8; }
+  .sectionHead { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .progressText { font-size:12.5px; color:#8B90A0; }
+  .addBtn { display:flex; align-items:center; gap:4px; background:#171A23; border:1px solid #2A2E3E; color:#E4E6EB; border-radius:20px; padding:6px 12px; font-size:12px; font-weight:600; }
+  .list { display:flex; flex-direction:column; gap:8px; }
+  .empty { color:#4B5162; font-size:13px; padding:30px 10px; text-align:center; }
+  .dayCard { display:flex; align-items:center; gap:10px; background:#171A23; border:1px solid #232636; border-radius:10px; padding:10px 12px; }
+  .checkBtn { background:transparent; border:none; display:flex; }
+  .dayTitle { font-size:13.5px; font-weight:500; line-height:1.4; }
+  .dayMeta { display:flex; align-items:center; gap:8px; font-size:11px; color:#6B7280; margin-top:4px; flex-wrap:wrap; }
+  .catPill { display:inline-flex; align-items:center; gap:3px; border:1px solid; border-radius:20px; padding:2px 8px; font-size:10.5px; font-weight:600; }
+  .skipBtn { background:transparent; border:1px solid #2A2E3E; color:#5A6478; border-radius:20px; padding:2px 8px; font-size:10px; font-weight:600; }
+  .skipBtn.active { color:#FB7185; border-color:#FB7185; }
+  .trashBtn { background:transparent; border:none; color:#4B5162; }
+  .chipRow { display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; }
+  .dayChip { background:#171A23; border:1px solid #232636; color:#8B90A0; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; white-space:nowrap; flex-shrink:0; }
+  .dayChip.active { }
+  .roadmapCard { background:#171A23; border:1px solid #232636; border-radius:12px; padding:16px; }
+  .roadmapHead { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; cursor:pointer; }
+  .roadmapNote { font-size:12px; color:#8B90A0; background:#0F1117; border:1px solid #232636; border-radius:8px; padding:8px 10px; margin-top:10px; line-height:1.5; }
+  .progressBarTrack { height:6px; background:#0F1117; border-radius:3px; overflow:hidden; }
+  .progressBarFill { height:100%; border-radius:3px; transition:width 0.3s; }
+  .stepRow { display:flex; align-items:center; gap:8px; background:transparent; border:none; padding:6px 4px; text-align:left; border-radius:6px; width:100%; }
+  .stepText { font-size:13px; color:#D1D3DC; line-height:1.4; }
+  .hint { font-size:11.5px; color:#4B5162; margin-top:10px; text-align:center; }
+  .overlay { position:fixed; inset:0; background:#0000009C; display:flex; align-items:center; justify-content:center; z-index:50; padding:16px; }
+  .modal { background:#171A23; border:1px solid #2A2E3E; border-radius:14px; padding:18px; width:100%; max-width:360px; display:flex; flex-direction:column; gap:10px; }
+  .modalHead { display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700; margin-bottom:2px; color:#818CF8; }
+  .closeBtn { background:transparent; border:none; color:#6B7280; }
+  .input { background:#0F1117; border:1px solid #2A2E3E; border-radius:8px; color:#F5F6FA; padding:10px 11px; font-size:13.5px; width:100%; }
+  .formRow { display:flex; gap:8px; }
+  .select { background:#0F1117; border:1px solid #2A2E3E; border-radius:8px; color:#F5F6FA; padding:10px 11px; font-size:13px; flex:1; }
+  .submitBtn { background:#818CF8; color:#0F1117; border:none; border-radius:8px; padding:11px; font-weight:700; font-size:13px; margin-top:4px; width:100%; }
+  .hidden { display:none !important; }
+  svg.icon { flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="eyebrow">PERSONAL DASHBOARD</div>
+    <div class="h1">Mohamed's Plan</div>
+  </div>
+  <span style="font-size:20px;">✳️</span>
+</div>
+
+<div class="locBanner" id="locBanner">
+  <span>📍</span><span id="locText">Fetching prayer times for Esna, Luxor…</span>
+</div>
+
+<nav class="tabs" id="tabs"></nav>
+<main id="content"></main>
+
+<div class="overlay hidden" id="dailyOverlay">
+  <div class="modal">
+    <div class="modalHead"><span>Add to today</span><button class="closeBtn" onclick="closeDailyForm()">✕</button></div>
+    <input class="input" id="dailyTitle" placeholder="What is it?" />
+    <div class="formRow">
+      <input class="input" id="dailyTime" type="time" />
+      <select class="select" id="dailyCategory"></select>
+    </div>
+    <button class="submitBtn" onclick="submitDaily()">Add</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="courseOverlay">
+  <div class="modal">
+    <div class="modalHead"><span>Add course</span><button class="closeBtn" onclick="closeCourseForm()">✕</button></div>
+    <input class="input" id="courseName" placeholder="Course name" />
+    <input class="input" id="courseProvider" placeholder="Provider (Udemy, Coursera…) — optional" />
+    <button class="submitBtn" onclick="submitCourse()">Add</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "planner:standalone:v1";
+
+const CATEGORY = {
+  gym:    { label: "Gym / Cardio", color: "#FB923C", icon: "🏋️" },
+  study:  { label: "Study",        color: "#818CF8", icon: "📘" },
+  prayer: { label: "Prayer",       color: "#34D399", icon: "🕌" },
+  free:   { label: "Free time",    color: "#94A3B8", icon: "🌙" },
+  other:  { label: "Other",        color: "#94A3B8", icon: "☀️" },
+};
+
+const DEFAULT_DAILY = [
+  { id:"d1", time:"00:00", title:"Sleep — phase 1 (3 full sleep cycles)", category:"free" },
+  { id:"d2", time:"04:30", title:"Wake up + Fajr prayer", category:"prayer", prayerKey:"Fajr" },
+  { id:"d3", time:"05:00", title:"Sleep — phase 2 (recovery)", category:"free" },
+  { id:"d4", time:"08:00", title:"Final wake up, start the day", category:"other" },
+  { id:"d5", time:"08:05", title:"Morning cardio: light jog / brisk walk (15 min)", category:"gym" },
+  { id:"d6", time:"08:20", title:"Home, shower, breakfast", category:"other" },
+  { id:"d7", time:"09:00", title:"Quran reading (2 juz')", category:"prayer" },
+  { id:"d8", time:"09:30", title:"Typing practice (15 min)", category:"study" },
+  { id:"d9", time:"09:45", title:"Programming (C) + electronics (Arduino) — 2h", category:"study" },
+  { id:"d10", time:"11:45", title:"Dhuhr prep + prayer", category:"prayer", prayerKey:"Dhuhr" },
+  { id:"d11", time:"12:30", title:"Gym — weight training", category:"gym" },
+  { id:"d12", time:"14:00", title:"Back home, lunch, rest", category:"other" },
+  { id:"d13", time:"15:30", title:"Asr prayer", category:"prayer", prayerKey:"Asr" },
+  { id:"d14", time:"16:00", title:"Flexible/open time — courses or exploring new skills", category:"study" },
+  { id:"d15", time:"18:45", title:"Maghrib prayer", category:"prayer", prayerKey:"Maghrib" },
+  { id:"d16", time:"19:15", title:"Evening cardio: moderate jog at the reservoir (30 min)", category:"gym" },
+  { id:"d17", time:"20:00", title:"Home, dinner", category:"other" },
+  { id:"d18", time:"20:45", title:"Free time — football, going out, series", category:"free" },
+  { id:"d19", time:"20:15", title:"Isha prayer", category:"prayer", prayerKey:"Isha" },
+];
+
+const GYM_SPLIT = [
+  { id:"push", day:"Day 1", name:"Push — Chest / Shoulders / Triceps", color:"#FB923C",
+    exercises:["Flat chest (barbell or dumbbell) — 2 sets x 8-12","Incline chest (dumbbell) — 2 sets x 8-12","Lower chest (machine/dips) — 2 sets x 8-12","Front shoulder (dumbbell/barbell) — 1 set x 10","Lateral raise (dumbbell/cable) — 2 sets x 12-15","Triceps (any strong cable/rope angle) — 2 sets x 12","Abs — 1-2 sets to failure"] },
+  { id:"pull", day:"Day 2", name:"Pull — Back / Rear Delts / Biceps / Lower back", color:"#818CF8",
+    exercises:["Lat pulldown or pull-up — 2 sets x 10-12","Seated cable row — 2 sets x 10","T-Bar row (back thickness) — 2 sets x 8-10","Rear delt fly / rope — 2 sets x 15","Biceps (dumbbell/EZ bar) — 2 sets x 12","Lower back (erector work) — 2 sets x 12-15"] },
+  { id:"legs", day:"Day 3", name:"Legs — Full lower body", color:"#2DD4BF",
+    exercises:["Programmed with the gym coach based on available equipment and capacity"] },
+  { id:"rest", day:"Day 4", name:"Rest Day", color:"#6B7280",
+    exercises:["Gym: full rest, no training","Morning cardio: skipped","Evening: 20 min brisk walk at the reservoir instead of jogging (active recovery)"] },
+  { id:"focus1", day:"Day 5", name:"Focus 1 — Full arms + full shoulders", color:"#FB923C",
+    exercises:["Tip: superset biceps and triceps for a stronger pump","Biceps — 4 sets (varied angles: alternating, hammer)","Triceps — 4 sets (varied angles: cable, pushdown)","Front shoulder — 2 sets","Lateral shoulder — 3 sets","Rear shoulder — 2 sets","Traps (shrugs, dumbbell/barbell) — 2 sets","Abs"] },
+  { id:"focus2", day:"Day 6", name:"Focus 2 — Bodyweight & endurance (Calisthenics)", color:"#2DD4BF",
+    exercises:["Pec deck / machine fly — 2 sets (warm-up, blood flow)","Pull-ups — 2 sets max reps","Push-ups — 2 sets max reps","Calves — 2 sets x 15-20","Abs"] },
+];
+
+const ROADMAPS_SEED = [
+  { id:"foundation", name:"Common Foundation", color:"#F59E0B",
+    note:"Shared base for Valeo / Siemens / Robotics paths — build this first.",
+    steps:["C Programming","C++","Data Structures & Algorithms","Embedded Systems basics","STM32","ARM Cortex-M","Control Systems","MATLAB / Simulink","Git","Linux basics"] },
+  { id:"c-arduino", name:"C + Arduino — 2 Month Plan", color:"#2DD4BF",
+    note:"2-4h/day (or 1.5h consistently). Don't rush past C, don't copy-paste, don't rely on Arduino without understanding. After this: STM32 + real Embedded C.",
+    steps:["Weeks 1-3: C — variables, conditions, loops, functions, arrays, pointers, bitwise ops (write code by hand, solve problems)","Week 4: Arduino IDE, digitalWrite/Read, analogRead — Project: LED blinking","Week 4: Project — button controls LED / LED brightness control","Weeks 5-6: GPIO, UART basics, working with libraries","Weeks 5-6: Project — read a temperature sensor","Weeks 5-6: Project — display output on LCD","Weeks 5-6: Project — send data over Serial Monitor","Weeks 7-8: Build project — simple smart home","Weeks 7-8: Build project — alarm system (sensor + buzzer)","Weeks 7-8: Build project — sensor + display, add to CV"] },
+  { id:"valeo", name:"Valeo — Automotive Software / Embedded", color:"#818CF8",
+    note:"Automotive embedded software path.",
+    steps:["C Programming","Data Structures & Algorithms","Embedded C","Microcontrollers (STM32 is the best starting point)","ARM Cortex-M","RTOS (FreeRTOS)","CAN protocol","AUTOSAR","UART / SPI / I2C","Debugging","Git","Linux basics"] },
+  { id:"siemens", name:"Siemens / ABB / Schneider — Automation & Control", color:"#FB923C",
+    note:"Industrial automation & control path.",
+    steps:["Control Systems","Classical Control","Sensors & Actuators","Electrical Machines basics","Industrial Instrumentation","PLC Programming","HMI","SCADA","VFDs","Industrial Networks"] },
+  { id:"robotics", name:"Robotics", color:"#F472B6",
+    note:"Hardest of the three — combines embedded + control + AI.",
+    steps:["Control Systems","Embedded Systems","C++","Python","Linux","ROS2","Computer Vision","Path Planning","SLAM","Sensor Fusion","AI basics","Kinematics","Dynamics"] },
+];
+
+function uid(){ return Date.now() + "-" + Math.random().toString(36).slice(2,7); }
+function todayKey(){ return new Date().toDateString(); }
+function withIds(list){ return list.map((title,i)=>({id:i+"-"+uid(), title, done:false})); }
+
+function defaultState(){
+  return {
+    date: todayKey(),
+    daily: DEFAULT_DAILY.map(d=>({...d, done:false, skipped:false})),
+    courses: [],
+    gymDone: {},
+    roadmaps: ROADMAPS_SEED.map(r=>({...r, steps: withIds(r.steps)})),
+    prayerTimes: null,
+  };
+}
+
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    if (parsed.date !== todayKey()) {
+      parsed.date = todayKey();
+      parsed.daily = parsed.daily.map(d=>({...d, done:false, skipped:false}));
+      parsed.gymDone = {};
+    }
+    return parsed;
+  } catch(e) { return defaultState(); }
+}
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let tab = "today";
+let openRoadmap = null;
+let activeGymDay = GYM_SPLIT[0].id;
+
+async function fetchPrayerTimes(){
+  const url = "https://api.aladhan.com/v1/timingsByCity?city=Esna&country=Egypt&method=5";
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("fetch failed");
+  const data = await res.json();
+  const t = data && data.data && data.data.timings;
+  if (!t) throw new Error("no timings");
+  return { Fajr:t.Fajr, Dhuhr:t.Dhuhr, Asr:t.Asr, Maghrib:t.Maghrib, Isha:t.Isha };
+}
+
+function applyPrayerTimes(times){
+  state.daily = state.daily.map(d => d.prayerKey && times[d.prayerKey] ? {...d, time: times[d.prayerKey]} : d);
+  state.prayerTimes = times;
+}
+
+async function initPrayerTimes(){
+  const needsFresh = !state.prayerTimes;
+  try {
+    const times = await fetchPrayerTimes();
+    applyPrayerTimes(times);
+    document.getElementById("locText").textContent = "Prayer times live for Esna, Luxor — resets automatically each day";
+    saveState();
+  } catch(e) {
+    document.getElementById("locText").textContent = "Couldn't fetch live prayer times — showing last known/default times";
+    saveState();
+  }
+}
+
+// ---------- rendering ----------
+function renderTabs(){
+  const tabsDef = [
+    {id:"today", label:"Today", icon:"☀️"},
+    {id:"gym", label:"Gym", icon:"🏋️"},
+    {id:"roadmaps", label:"Roadmaps", icon:"🧭"},
+    {id:"courses", label:"Courses", icon:"📘"},
+  ];
+  document.getElementById("tabs").innerHTML = tabsDef.map(t =>
+    `<button class="tab-btn ${tab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.icon} ${t.label}</button>`
+  ).join("");
+}
+
+function setTab(id){ tab = id; render(); }
+window.setTab = setTab;
+
+function render(){
+  renderTabs();
+  const el = document.getElementById("content");
+  if (tab==="today") el.innerHTML = renderToday();
+  else if (tab==="gym") el.innerHTML = renderGym();
+  else if (tab==="roadmaps") el.innerHTML = renderRoadmaps();
+  else if (tab==="courses") el.innerHTML = renderCourses();
+}
+
+function renderToday(){
+  const doneCount = state.daily.filter(d=>d.done).length;
+  const skippedCount = state.daily.filter(d=>d.skipped).length;
+  const rows = state.daily.map(d=>{
+    const cat = CATEGORY[d.category]||CATEGORY.other;
+    const icon = d.done ? "✅" : d.skipped ? "⛔" : "⚪";
+    const skipBtn = !d.done ? `<button class="skipBtn ${d.skipped?'active':''}" onclick="toggleSkip('${d.id}')">${d.skipped?"Won't do — undo":"Won't do it today"}</button>` : "";
+    return `<div class="dayCard" style="opacity:${d.skipped?0.55:1}">
+      <button class="checkBtn" onclick="toggleDaily('${d.id}')">${icon}</button>
+      <div style="flex:1">
+        <div class="dayTitle" style="text-decoration:${(d.done||d.skipped)?'line-through':'none'};opacity:${d.done?0.5:1}">${escapeHtml(d.title)}</div>
+        <div class="dayMeta">
+          🕐 ${d.time}
+          <span class="catPill" style="color:${cat.color};border-color:${cat.color}55">${cat.icon} ${cat.label}</span>
+          ${skipBtn}
+        </div>
+      </div>
+      <button class="trashBtn" onclick="deleteDaily('${d.id}')">🗑</button>
+    </div>`;
+  }).join("");
+  return `
+    <div class="sectionHead">
+      <div class="progressText">${doneCount}/${state.daily.length} done${skippedCount>0?` · ${skippedCount} skipped`:""}</div>
+      <button class="addBtn" onclick="openDailyForm()">＋ Add</button>
+    </div>
+    <div class="list">${rows}</div>
+  `;
+}
+
+function renderGym(){
+  const chips = GYM_SPLIT.map(d=>
+    `<button class="dayChip" style="border-color:${activeGymDay===d.id?d.color:'#232636'};color:${activeGymDay===d.id?d.color:'#8B90A0'}" onclick="setGymDay('${d.id}')">${d.day}</button>`
+  ).join("");
+  const activeDay = GYM_SPLIT.find(d=>d.id===activeGymDay);
+  const exRows = activeDay.exercises.map((ex,idx)=>{
+    const key = activeDay.id+"-"+idx;
+    const done = !!state.gymDone[key];
+    return `<button class="stepRow" onclick="toggleGymExercise('${activeDay.id}',${idx})">
+      <span>${done?"✅":"⚪"}</span>
+      <span class="stepText" style="text-decoration:${done?'line-through':'none'};opacity:${done?0.5:1}">${escapeHtml(ex)}</span>
+    </button>`;
+  }).join("");
+  return `
+    <div class="chipRow">${chips}</div>
+    <div class="roadmapCard">
+      <div class="h2" style="color:${activeDay.color};margin-bottom:4px">${activeDay.name}</div>
+      <div class="dayMeta">${activeDay.day} of the 6-day PPL + focus split</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">${exRows}</div>
+    </div>
+    <div class="hint">High intensity — take sets to or near muscular failure.</div>
+  `;
+}
+
+function renderRoadmaps(){
+  return state.roadmaps.map(rm=>{
+    const doneN = rm.steps.filter(s=>s.done).length;
+    const pct = rm.steps.length ? Math.round(doneN/rm.steps.length*100) : 0;
+    const isOpen = openRoadmap===rm.id;
+    const stepsHtml = rm.steps.map((st,i)=>
+      `<button class="stepRow" onclick="toggleStep('${rm.id}','${st.id}')">
+        <span>${st.done?"✅":"⚪"}</span>
+        <span class="stepText" style="text-decoration:${st.done?'line-through':'none'};opacity:${st.done?0.5:1}">${i+1}. ${escapeHtml(st.title)}</span>
+      </button>`
+    ).join("");
+    return `<div class="roadmapCard">
+      <div class="roadmapHead" onclick="toggleRoadmapOpen('${rm.id}')">
+        <div style="flex:1">
+          <div class="h2" style="color:${rm.color}">${rm.name}</div>
+          <div class="dayMeta">${doneN}/${rm.steps.length} steps · ${pct}%</div>
+        </div>
+        <span style="color:#6B7280">${isOpen?"▾":"▸"}</span>
+      </div>
+      <div class="progressBarTrack"><div class="progressBarFill" style="width:${pct}%;background:${rm.color}"></div></div>
+      ${isOpen ? `
+        ${rm.note?`<div class="roadmapNote">${escapeHtml(rm.note)}</div>`:""}
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">${stepsHtml}</div>
+        <button class="addBtn" style="margin-top:10px;border-color:${rm.color}66" onclick="addStep('${rm.id}')">＋ Step</button>
+      ` : ""}
+    </div>`;
+  }).join('<div style="height:12px"></div>');
+}
+
+function renderCourses(){
+  const rows = state.courses.length===0 ? `<div class="empty">No courses yet — add ones you want to take.</div>` :
+    state.courses.map(c=>{
+      const statusColor = c.status==="done" ? "#2DD4BF" : c.status==="in-progress" ? "#818CF8" : "#6B7280";
+      const statusLabel = c.status==="done" ? "Done" : c.status==="in-progress" ? "In progress" : "Wishlist";
+      return `<div class="dayCard">
+        <div style="flex:1">
+          <div class="dayTitle">${escapeHtml(c.name)}</div>
+          <div class="dayMeta">
+            ${c.provider?`<span>${escapeHtml(c.provider)}</span>`:""}
+            <button class="catPill" style="color:${statusColor};border-color:${statusColor}55;background:transparent" onclick="cycleCourseStatus('${c.id}')">${statusLabel}</button>
+          </div>
+        </div>
+        <button class="trashBtn" onclick="deleteCourse('${c.id}')">🗑</button>
+      </div>`;
+    }).join("");
+  return `
+    <div class="sectionHead">
+      <div class="progressText">${state.courses.length} courses tracked</div>
+      <button class="addBtn" onclick="openCourseForm()">＋ Add</button>
+    </div>
+    <div class="list">${rows}</div>
+  `;
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ---------- actions ----------
+function toggleDaily(id){
+  state.daily = state.daily.map(d => d.id===id ? {...d, done:!d.done, skipped:false} : d);
+  saveState(); render();
+}
+function toggleSkip(id){
+  state.daily = state.daily.map(d => d.id===id ? {...d, skipped:!d.skipped, done:false} : d);
+  saveState(); render();
+}
+function deleteDaily(id){
+  state.daily = state.daily.filter(d => d.id!==id);
+  saveState(); render();
+}
+function setGymDay(id){ activeGymDay = id; render(); }
+function toggleGymExercise(dayId, idx){
+  const key = dayId+"-"+idx;
+  state.gymDone[key] = !state.gymDone[key];
+  saveState(); render();
+}
+function toggleRoadmapOpen(id){ openRoadmap = openRoadmap===id ? null : id; render(); }
+function toggleStep(roadmapId, stepId){
+  state.roadmaps = state.roadmaps.map(rm => rm.id===roadmapId ? {...rm, steps: rm.steps.map(st => st.id===stepId ? {...st, done:!st.done} : st)} : rm);
+  saveState(); render();
+}
+function addStep(roadmapId){
+  const title = prompt("New roadmap step:");
+  if (!title || !title.trim()) return;
+  state.roadmaps = state.roadmaps.map(rm => rm.id===roadmapId ? {...rm, steps:[...rm.steps, {id:uid(), title:title.trim(), done:false}]} : rm);
+  saveState(); render();
+}
+function cycleCourseStatus(id){
+  const order = ["wishlist","in-progress","done"];
+  state.courses = state.courses.map(c => c.id===id ? {...c, status: order[(order.indexOf(c.status)+1)%order.length]} : c);
+  saveState(); render();
+}
+function deleteCourse(id){
+  state.courses = state.courses.filter(c => c.id!==id);
+  saveState(); render();
+}
+
+// forms
+function openDailyForm(){
+  const sel = document.getElementById("dailyCategory");
+  sel.innerHTML = Object.entries(CATEGORY).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+  document.getElementById("dailyTitle").value = "";
+  document.getElementById("dailyTime").value = "";
+  document.getElementById("dailyOverlay").classList.remove("hidden");
+}
+function closeDailyForm(){ document.getElementById("dailyOverlay").classList.add("hidden"); }
+function submitDaily(){
+  const title = document.getElementById("dailyTitle").value.trim();
+  if (!title) return;
+  const time = document.getElementById("dailyTime").value || "—";
+  const category = document.getElementById("dailyCategory").value;
+  const item = {id:uid(), time, title, category, done:false, skipped:false};
+  state.daily = [...state.daily, item].sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+  saveState(); closeDailyForm(); render();
+}
+function openCourseForm(){
+  document.getElementById("courseName").value = "";
+  document.getElementById("courseProvider").value = "";
+  document.getElementById("courseOverlay").classList.remove("hidden");
+}
+function closeCourseForm(){ document.getElementById("courseOverlay").classList.add("hidden"); }
+function submitCourse(){
+  const name = document.getElementById("courseName").value.trim();
+  if (!name) return;
+  const provider = document.getElementById("courseProvider").value.trim();
+  state.courses = [...state.courses, {id:uid(), name, provider, status:"wishlist"}];
+  saveState(); closeCourseForm(); render();
+}
+
+// expose to inline onclick handlers
+Object.assign(window, {
+  toggleDaily, toggleSkip, deleteDaily, setGymDay, toggleGymExercise,
+  toggleRoadmapOpen, toggleStep, addStep, cycleCourseStatus, deleteCourse,
+  openDailyForm, closeDailyForm, submitDaily, openCourseForm, closeCourseForm, submitCourse
+});
+
+render();
+initPrayerTimes();
+</script>
+</body>
+</html>
